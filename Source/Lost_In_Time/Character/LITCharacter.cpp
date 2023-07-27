@@ -2,17 +2,36 @@
 
 
 #include "LITCharacter.h"
+#include "GameFramework/SpringArmComponent.h"
+#include "Camera/CameraComponent.h"
+#include "EnhancedInputComponent.h"
+#include "EnhancedInputSubsystems.h"
 
 ALITCharacter::ALITCharacter()
 {
 	PrimaryActorTick.bCanEverTick = true;
 
+	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
+	CameraBoom->SetupAttachment(GetMesh());
+	CameraBoom->TargetArmLength = 600.f;
+	CameraBoom->bUsePawnControlRotation = true;
+
+	FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
+	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName);
+	FollowCamera->bUsePawnControlRotation = false;
 }
 
 void ALITCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	if (const ULocalPlayer* Player = (GEngine && GetWorld()) ? GEngine->GetFirstGamePlayer(GetWorld()) : nullptr)
+	{
+		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(Player))
+		{
+			Subsystem->AddMappingContext(MappingContext, 0);
+		}
+	}
 }
 
 void ALITCharacter::Tick(float DeltaTime)
@@ -25,5 +44,44 @@ void ALITCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
+	if (UEnhancedInputComponent* EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(PlayerInputComponent)) {
+
+		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &ALITCharacter::Move);
+
+		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &ALITCharacter::Look);
+
+		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Triggered, this, &ACharacter::Jump);
+		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &ACharacter::StopJumping);
+
+		//EnhancedInputComponent->BindAction(InteractAction, ETriggerEvent::Triggered, this, &ALITCharacter);
+	}
 }
 
+void ALITCharacter::Move(const FInputActionValue& Value)
+{
+	FVector2D MovementVector = Value.Get<FVector2D>();
+
+	if (Controller != nullptr)
+	{
+		const FRotator Rotation = Controller->GetControlRotation();
+		const FRotator YawRotation(0, Rotation.Yaw, 0);
+
+		const FVector ForwardDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
+
+		const FVector RightDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
+
+		AddMovementInput(ForwardDirection, MovementVector.Y);
+		AddMovementInput(RightDirection, MovementVector.X);
+	}
+}
+
+void ALITCharacter::Look(const FInputActionValue& Value)
+{
+	FVector2D LookAxisVector = Value.Get<FVector2D>();
+
+	if (Controller != nullptr)
+	{
+		AddControllerYawInput(LookAxisVector.X);
+		AddControllerPitchInput(-LookAxisVector.Y);
+	}
+}
