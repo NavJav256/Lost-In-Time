@@ -46,4 +46,11 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Pickup Properties")
 	class USoundCue* PickupCue;
 
+	UPROPERTY(EditAnywhere, Category = "Pickup Properties")
+	class UTexture2D* ItemImage;
+
+public:
+
+	FORCEINLINE USoundCue* GetPickupCue() { return PickupCue; }
+
 };

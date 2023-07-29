@@ -43,9 +43,17 @@ protected:
 
 	void Look(const FInputActionValue& Value);
 
+	void Interact();
+
 private:
 
 	UPROPERTY(VisibleAnywhere, Category = Camera)
 	class UCameraComponent* FollowCamera;
+
+	class APickupItem* CollectedItem;
+
+public:
+
+	void SetCollectedItem(APickupItem* Item);
 
 };

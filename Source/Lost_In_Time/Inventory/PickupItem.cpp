@@ -6,6 +6,7 @@
 #include "Components/SphereComponent.h"
 #include "Components/WidgetComponent.h"
 #include "Sound/SoundCue.h"
+#include "Lost_In_Time/Character/LITCharacter.h"
 
 APickupItem::APickupItem()
 {
@@ -27,7 +28,6 @@ APickupItem::APickupItem()
 	PickupWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("PickupWidget"));
 	PickupWidget->SetupAttachment(RootComponent);
 }
-
 
 void APickupItem::BeginPlay()
 {
@@ -56,10 +56,18 @@ void APickupItem::Interact()
 
 void APickupItem::OnSphereOverlap(UPrimitiveComponent* OverlapepdComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-
+	ALITCharacter* LITCharacter = Cast<ALITCharacter>(OtherActor);
+	if (LITCharacter)
+	{
+		LITCharacter->SetCollectedItem(this);
+	}
 }
 
 void APickupItem::OnSphereEndOverlap(UPrimitiveComponent* OverlapepdComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
-
+	ALITCharacter* LITCharacter = Cast<ALITCharacter>(OtherActor);
+	if (LITCharacter)
+	{
+		LITCharacter->SetCollectedItem(nullptr);
+	}
 }

@@ -6,6 +6,9 @@
 #include "Camera/CameraComponent.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "Kismet/GameplayStatics.h"
+#include "Sound/SoundCue.h"
+#include "Lost_In_Time/Inventory/PickupItem.h"
 
 ALITCharacter::ALITCharacter()
 {
@@ -52,7 +55,7 @@ void ALITCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
 		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Triggered, this, &ACharacter::Jump);
 		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &ACharacter::StopJumping);
 
-		//EnhancedInputComponent->BindAction(InteractAction, ETriggerEvent::Triggered, this, &ALITCharacter);
+		EnhancedInputComponent->BindAction(InteractAction, ETriggerEvent::Triggered, this, &ALITCharacter::Interact);
 	}
 }
 
@@ -82,5 +85,35 @@ void ALITCharacter::Look(const FInputActionValue& Value)
 	{
 		AddControllerYawInput(LookAxisVector.X);
 		AddControllerPitchInput(-LookAxisVector.Y);
+	}
+}
+
+void ALITCharacter::Interact()
+{
+	if (CollectedItem)
+	{
+		CollectedItem->ShowPickupWidget(false);
+
+		if (CollectedItem->GetPickupCue())
+		{
+			UGameplayStatics::PlaySoundAtLocation(this, CollectedItem->GetPickupCue(), GetActorLocation());
+		}
+
+		CollectedItem->Interact();
+	}
+}
+
+void ALITCharacter::SetCollectedItem(APickupItem* Item)
+{
+	if (CollectedItem)
+	{
+		CollectedItem->ShowPickupWidget(false);
+	}
+
+	CollectedItem = Item;
+
+	if (CollectedItem)
+	{
+		CollectedItem->ShowPickupWidget(true);
 	}
 }

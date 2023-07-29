@@ -14,4 +14,8 @@ class LOST_IN_TIME_API UInventoryWidget : public UUserWidget
 {
 	GENERATED_BODY()
 	
+private:
+
+	UPROPERTY(meta = (BindWidget))
+	class UHorizontalBox* InventoryBox;
 };
