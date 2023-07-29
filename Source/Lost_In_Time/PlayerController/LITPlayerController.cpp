@@ -12,3 +12,13 @@ void ALITPlayerController::BeginPlay()
 	LITHUD = Cast<ALITHUD>(GetHUD());
 	LITHUD->AddInventory();
 }
+
+void ALITPlayerController::AddHUDItem(FItemDetails Details)
+{
+	LITHUD = LITHUD == nullptr ? Cast<ALITHUD>(GetHUD()) : LITHUD;
+
+	if (LITHUD && LITHUD->InventoryWidget)
+	{
+		LITHUD->InventoryWidget->AddItem(Details);
+	}
+}

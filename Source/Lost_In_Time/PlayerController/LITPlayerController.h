@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerController.h"
+#include "Lost_In_Time/Structs/ItemDetails.h"
 #include "LITPlayerController.generated.h"
 
 /**
@@ -15,6 +16,8 @@ class LOST_IN_TIME_API ALITPlayerController : public APlayerController
 	GENERATED_BODY()
 	
 public:
+
+	void AddHUDItem(FItemDetails Details);
 
 protected:
 

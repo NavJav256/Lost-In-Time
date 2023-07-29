@@ -54,4 +54,6 @@ public:
 
 	FORCEINLINE USoundCue* GetPickupCue() { return PickupCue; }
 
+	FORCEINLINE FItemDetails GetItemDetails() { return ItemDetails; }
+
 };

@@ -9,6 +9,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Sound/SoundCue.h"
 #include "Lost_In_Time/Inventory/PickupItem.h"
+#include "Lost_In_Time/PlayerController/LITPlayerController.h"
 
 ALITCharacter::ALITCharacter()
 {
@@ -97,6 +98,11 @@ void ALITCharacter::Interact()
 		if (CollectedItem->GetPickupCue())
 		{
 			UGameplayStatics::PlaySoundAtLocation(this, CollectedItem->GetPickupCue(), GetActorLocation());
+		}
+
+		if (ALITPlayerController* LITPlayerController = Cast<ALITPlayerController>(GetController()))
+		{
+			LITPlayerController->AddHUDItem(CollectedItem->GetItemDetails());
 		}
 
 		CollectedItem->Interact();

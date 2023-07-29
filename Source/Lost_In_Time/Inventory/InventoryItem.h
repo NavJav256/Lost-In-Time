@@ -13,24 +13,18 @@ UCLASS()
 class LOST_IN_TIME_API UInventoryItem : public UUserWidget
 {
 	GENERATED_BODY()
+
+public:
+
+	void SetImage(class UTexture2D* Image);
+
+	void SetQuantity(int32 Q);
 	
 private:
-
-	UPROPERTY(meta = (BindWidget))
-	class UButton* ItemButton;
 
 	UPROPERTY(meta = (BindWidget))
 	class UImage* ItemIcon;
 
 	UPROPERTY(meta = (BindWidget))
 	class UTextBlock* QuantityText;
-
-	UPROPERTY(EditAnywhere)
-	TSubclassOf<AActor> ItemClass;
-
-	UPROPERTY(VisibleAnywhere)
-	int32 Quantity;
-
-	UPROPERTY(VisibleAnywhere)
-	int32 MaxStack;
 };
