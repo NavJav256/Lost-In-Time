@@ -3,3 +3,7 @@
 
 #include "InventoryWidget.h"
 
+void UInventoryWidget::AddItem()
+{
+
+}

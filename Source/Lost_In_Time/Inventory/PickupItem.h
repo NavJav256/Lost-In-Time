@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "Lost_In_Time/Interfaces/Interactable.h"
+#include "Lost_In_Time/Structs/ItemDetails.h"
 #include "PickupItem.generated.h"
 
 UCLASS()
@@ -47,7 +48,7 @@ private:
 	class USoundCue* PickupCue;
 
 	UPROPERTY(EditAnywhere, Category = "Pickup Properties")
-	class UTexture2D* ItemImage;
+	FItemDetails ItemDetails;
 
 public:
 

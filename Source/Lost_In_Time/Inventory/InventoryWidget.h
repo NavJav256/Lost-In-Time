@@ -14,6 +14,10 @@ class LOST_IN_TIME_API UInventoryWidget : public UUserWidget
 {
 	GENERATED_BODY()
 	
+public:
+
+	void AddItem();
+
 private:
 
 	UPROPERTY(meta = (BindWidget))

@@ -14,4 +14,14 @@ class LOST_IN_TIME_API ALITPlayerController : public APlayerController
 {
 	GENERATED_BODY()
 	
+public:
+
+protected:
+
+	virtual void BeginPlay() override;
+
+private:
+
+	UPROPERTY()
+	class ALITHUD* LITHUD;
 };
