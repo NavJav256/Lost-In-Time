@@ -50,10 +50,11 @@ private:
 	UPROPERTY(VisibleAnywhere, Category = Camera)
 	class UCameraComponent* FollowCamera;
 
-	class APickupItem* CollectedItem;
+	UPROPERTY(VisibleAnywhere)
+	class ALever* InteractLever;
 
 public:
 
-	void SetCollectedItem(APickupItem* Item);
+	void SetInteractLever(ALever* Lever);
 
 };

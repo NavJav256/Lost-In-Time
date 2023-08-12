@@ -59,7 +59,7 @@ void APickupItem::OnSphereOverlap(UPrimitiveComponent* OverlapepdComponent, AAct
 	ALITCharacter* LITCharacter = Cast<ALITCharacter>(OtherActor);
 	if (LITCharacter)
 	{
-		LITCharacter->SetCollectedItem(this);
+		
 	}
 }
 
@@ -68,6 +68,6 @@ void APickupItem::OnSphereEndOverlap(UPrimitiveComponent* OverlapepdComponent, A
 	ALITCharacter* LITCharacter = Cast<ALITCharacter>(OtherActor);
 	if (LITCharacter)
 	{
-		LITCharacter->SetCollectedItem(nullptr);
+		
 	}
 }

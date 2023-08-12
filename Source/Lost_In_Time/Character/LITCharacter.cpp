@@ -9,6 +9,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Sound/SoundCue.h"
 #include "Lost_In_Time/Inventory/PickupItem.h"
+#include "Lost_In_Time/PuzzleObjects/Lever.h"
 #include "Lost_In_Time/PlayerController/LITPlayerController.h"
 
 ALITCharacter::ALITCharacter()
@@ -91,35 +92,14 @@ void ALITCharacter::Look(const FInputActionValue& Value)
 
 void ALITCharacter::Interact()
 {
-	if (CollectedItem)
+	if (InteractLever)
 	{
-		CollectedItem->ShowPickupWidget(false);
-
-		if (CollectedItem->GetPickupCue())
-		{
-			UGameplayStatics::PlaySoundAtLocation(this, CollectedItem->GetPickupCue(), GetActorLocation());
-		}
-
-		if (ALITPlayerController* LITPlayerController = Cast<ALITPlayerController>(GetController()))
-		{
-			LITPlayerController->AddHUDItem(CollectedItem->GetItemDetails());
-		}
-
-		CollectedItem->Interact();
+		InteractLever->Interact();
 	}
 }
 
-void ALITCharacter::SetCollectedItem(APickupItem* Item)
+void ALITCharacter::SetInteractLever(ALever* Lever)
 {
-	if (CollectedItem)
-	{
-		CollectedItem->ShowPickupWidget(false);
-	}
-
-	CollectedItem = Item;
-
-	if (CollectedItem)
-	{
-		CollectedItem->ShowPickupWidget(true);
-	}
+	InteractLever = Lever;
 }
+
