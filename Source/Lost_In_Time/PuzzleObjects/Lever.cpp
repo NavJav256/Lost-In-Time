@@ -76,10 +76,5 @@ void ALever::Interact()
 			HandleTimeline->ReverseFromEnd();
 		}
 	}
-	for (ADoor* Door: TargetDoors)
-	{
-		Door->SwitchState();
-		UE_LOG(LogTemp, Warning, TEXT("Switch State in Lever"))
-	}
 }
 

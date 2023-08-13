@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Door.h"
+#include "Lever.h"
 #include "BigDoor.generated.h"
 
 /**
@@ -19,6 +20,8 @@ public:
 	ABigDoor();
 
 	virtual void SwitchState() override;
+
+	virtual void Tick(float DeltaTime) override;
 
 protected:
 
@@ -44,4 +47,10 @@ private:
 	
 	UPROPERTY(VisibleAnywhere)
 	UStaticMeshComponent* RightColumn;
+
+	UPROPERTY(EditAnywhere)
+	ALever* TargetLever;
+
+	ELeverState TargetLeverState;
+
 };

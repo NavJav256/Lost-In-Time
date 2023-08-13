@@ -63,6 +63,7 @@ private:
 	UPROPERTY(EditAnywhere)
 	UCurveFloat* HandleCurve;
 
-	UPROPERTY(EditAnywhere)
-	TArray<class ADoor*> TargetDoors;
+public:
+
+	FORCEINLINE ELeverState GetLeverState() { return LeverState; }
 };

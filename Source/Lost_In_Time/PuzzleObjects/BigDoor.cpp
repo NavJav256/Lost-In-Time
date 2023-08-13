@@ -2,10 +2,11 @@
 
 
 #include "BigDoor.h"
+#include "Lever.h"
 
 ABigDoor::ABigDoor()
 {
-	PrimaryActorTick.bCanEverTick = false;
+	PrimaryActorTick.bCanEverTick = true;
 
 	DefaultSceneRoot = CreateDefaultSubobject<USceneComponent>(TEXT("Default Scene Root"));
 	RootComponent = DefaultSceneRoot;
@@ -25,13 +26,25 @@ ABigDoor::ABigDoor()
 	DoorTimeline = CreateDefaultSubobject<UTimelineComponent>(TEXT("Door Timeline Component"));
 
 	DoorState = EDoorState::EDS_CLOSED;
+	
 }
 
 void ABigDoor::BeginPlay()
 {
 	Super::BeginPlay();
 
+	if (TargetLever)
+	{
+		TargetLeverState = TargetLever->GetLeverState();
+	}
+}
 
+void ABigDoor::Tick(float DeltaTime)
+{
+	if (TargetLever && TargetLever->GetLeverState() != TargetLeverState) {
+		SwitchState();
+		TargetLeverState = TargetLever->GetLeverState();
+	}
 }
 
 void ABigDoor::SwitchState()
@@ -52,6 +65,7 @@ void ABigDoor::SwitchState()
 		}
 	}
 }
+
 
 void ABigDoor::UpdateDoor(float DoorUpdate)
 {
