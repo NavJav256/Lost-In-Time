@@ -2,7 +2,6 @@
 
 
 #include "BigDoor.h"
-#include "Lever.h"
 
 ABigDoor::ABigDoor()
 {
@@ -41,6 +40,8 @@ void ABigDoor::BeginPlay()
 
 void ABigDoor::Tick(float DeltaTime)
 {
+	Super::Tick(DeltaTime);
+
 	if (TargetLever && TargetLever->GetLeverState() != TargetLeverState) {
 		SwitchState();
 		TargetLeverState = TargetLever->GetLeverState();
