@@ -7,7 +7,7 @@
 
 ALaserWall::ALaserWall()
 {
-	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bCanEverTick = false;
 
 	DefaultSceneRoot = CreateDefaultSubobject<USceneComponent>(TEXT("Default Scene Root"));
 	RootComponent = DefaultSceneRoot;
@@ -15,8 +15,15 @@ ALaserWall::ALaserWall()
 	Lasers = CreateDefaultSubobject<UInstancedStaticMeshComponent>(TEXT("Lasers"));
 	Lasers->SetupAttachment(RootComponent);
 
+	LaserTimeline = CreateDefaultSubobject<UTimelineComponent>(TEXT("Laser Timeline"));
+
 	BlockArea = CreateDefaultSubobject<UBoxComponent>(TEXT("Block Area"));
 	BlockArea->SetupAttachment(RootComponent);
+	BlockArea->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	BlockArea->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
+	BlockArea->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Block);
+
+	bActive = true;
 }
 
 void ALaserWall::OnConstruction(const FTransform& Transform)
@@ -50,10 +57,45 @@ void ALaserWall::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	if (LaserMaterialInstance)
+	{
+		DynamicLaserMaterialInstance = UMaterialInstanceDynamic::Create(LaserMaterialInstance, this);
+		Lasers->SetMaterial(0, DynamicLaserMaterialInstance);
+		DynamicLaserMaterialInstance->SetScalarParameterValue(TEXT("Opacity"), 1.f);
+	}
 }
 
-void ALaserWall::Tick(float DeltaTime)
+void ALaserWall::UpdateLasers(float LaserOpacity)
 {
-	Super::Tick(DeltaTime);
+	DynamicLaserMaterialInstance->SetScalarParameterValue(TEXT("Opacity"), LaserOpacity);
+}
 
+void ALaserWall::Activate()
+{
+	if (!bActive)
+	{
+		bActive = true;
+		BlockArea->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Block);
+		LaserTrack.BindDynamic(this, &ALaserWall::UpdateLasers);
+		if (LaserTimeline && LaserCurve)
+		{
+			LaserTimeline->AddInterpFloat(LaserCurve, LaserTrack);
+			LaserTimeline->Play();
+		}
+	}
+}
+
+void ALaserWall::Deactivate()
+{
+	if (bActive)
+	{
+		bActive = false;
+		BlockArea->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Ignore);
+		LaserTrack.BindDynamic(this, &ALaserWall::UpdateLasers);
+		if (LaserTimeline && LaserCurve)
+		{
+			LaserTimeline->AddInterpFloat(LaserCurve, LaserTrack);
+			LaserTimeline->ReverseFromEnd();
+		}
+	}
 }

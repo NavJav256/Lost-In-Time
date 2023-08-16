@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "Components/TimelineComponent.h"
 #include "LaserWall.generated.h"
 
 UCLASS()
@@ -15,9 +16,11 @@ public:
 
 	ALaserWall();
 
-	virtual void Tick(float DeltaTime) override;
-
 	virtual void OnConstruction(const FTransform& Transform) override;
+
+	void Activate();
+
+	void Deactivate();
 
 protected:
 
@@ -33,6 +36,23 @@ private:
 
 	UPROPERTY(VisibleAnywhere)
 	class UBoxComponent* BlockArea;
+
+	UPROPERTY(VisibleAnywhere)
+	UTimelineComponent* LaserTimeline;
+
+	FOnTimelineFloat LaserTrack;
+
+	UFUNCTION()
+	void UpdateLasers(float LaserOpacity);
+
+	UPROPERTY(EditAnywhere)
+	UCurveFloat* LaserCurve;
+
+	UPROPERTY(VisibleAnywhere)
+	UMaterialInstanceDynamic* DynamicLaserMaterialInstance;
+
+	UPROPERTY(EditAnywhere)
+	UMaterialInstance* LaserMaterialInstance;
 
 	UPROPERTY(EditAnywhere)
 	int32 NumRays;
