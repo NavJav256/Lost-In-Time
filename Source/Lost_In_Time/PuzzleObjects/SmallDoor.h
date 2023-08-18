@@ -4,20 +4,19 @@
 
 #include "CoreMinimal.h"
 #include "Door.h"
-#include "Lever.h"
-#include "BigDoor.generated.h"
+#include "SmallDoor.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class LOST_IN_TIME_API ABigDoor : public ADoor
+class LOST_IN_TIME_API ASmallDoor : public ADoor
 {
 	GENERATED_BODY()
-
+	
 public:
 
-	ABigDoor();
+	ASmallDoor();
 
 	virtual void SwitchState() override;
 
@@ -36,20 +35,8 @@ private:
 	USceneComponent* DefaultSceneRoot;
 
 	UPROPERTY(VisibleAnywhere)
-	UStaticMeshComponent* LeftColumn;
-	
-	UPROPERTY(VisibleAnywhere)
-	UStaticMeshComponent* LeftDoor;
-	
-	UPROPERTY(VisibleAnywhere)
-	UStaticMeshComponent* RightDoor;
-	
-	UPROPERTY(VisibleAnywhere)
-	UStaticMeshComponent* RightColumn;
+	UStaticMeshComponent* DoorFrame;
 
-	UPROPERTY(EditAnywhere)
-	ALever* TargetLever;
-
-	ELeverState TargetLeverState;
-
+	UPROPERTY(VisibleAnywhere)
+	UStaticMeshComponent* DoorMesh;
 };
