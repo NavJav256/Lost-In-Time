@@ -8,7 +8,6 @@
 #include "EnhancedInputSubsystems.h"
 #include "Kismet/GameplayStatics.h"
 #include "Sound/SoundCue.h"
-#include "Lost_In_Time/Inventory/PickupItem.h"
 #include "Lost_In_Time/PuzzleObjects/Lever.h"
 #include "Lost_In_Time/PlayerController/LITPlayerController.h"
 

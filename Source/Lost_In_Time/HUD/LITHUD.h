@@ -18,14 +18,6 @@ public:
 
 	virtual void DrawHUD() override;
 
-	UPROPERTY()
-	class UInventoryWidget* InventoryWidget;
-
-	UPROPERTY(EditAnywhere, Category = "Inventory")
-	TSubclassOf<class UUserWidget> InventoryClass;
-
-	void AddInventory();
-
 protected:
 
 	virtual void BeginPlay() override;
