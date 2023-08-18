@@ -33,12 +33,6 @@ protected:
 
 	virtual void BeginPlay() override;
 
-	UFUNCTION()
-	virtual void OnOverlap(UPrimitiveComponent* OverlapepdComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
-
-	UFUNCTION()
-	virtual void OnOverlapEnd(UPrimitiveComponent* OverlapepdComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
-
 private:
 
 	UPROPERTY(EditAnywhere)
@@ -59,9 +53,9 @@ private:
 	UPROPERTY(EditAnywhere)
 	TArray<UStaticMesh*> Meshes;
 
-	UPROPERTY(EditAnywhere)
-	class ALaserWall* TargetLaserWall;
 
-	UPROPERTY(EditAnywhere)
-	bool bActivatesLasers;
+public:
+
+	FORCEINLINE UBoxComponent* GetOverlapVolume() { return OverlapVolume; }
+
 };

@@ -58,29 +58,4 @@ void AFloorButton::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	OverlapVolume->OnComponentBeginOverlap.AddDynamic(this, &AFloorButton::OnOverlap);
-	OverlapVolume->OnComponentEndOverlap.AddDynamic(this, &AFloorButton::OnOverlapEnd);
 }
-
-void AFloorButton::OnOverlap(UPrimitiveComponent* OverlapepdComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
-{
-	if (TargetLaserWall)
-	{
-		if (bActivatesLasers)
-		{
-			TargetLaserWall->Activate();
-		}
-		else
-		{
-			TargetLaserWall->Deactivate();
-		}
-	}
-}
-
-void AFloorButton::OnOverlapEnd(UPrimitiveComponent* OverlapepdComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
-{
-
-}
-
-
-
