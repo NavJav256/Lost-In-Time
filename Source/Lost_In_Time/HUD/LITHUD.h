@@ -21,4 +21,16 @@ public:
 protected:
 
 	virtual void BeginPlay() override;
+
+private:
+
+	UTexture2D* Crosshair;
+
+	FLinearColor CrosshairColor;
+
+	void DrawCrosshair(UTexture2D* Texture, FVector2D ViewportCenter, FLinearColor Color);
+
+public:
+
+	FORCEINLINE void SetCrosshairColor(FLinearColor Color) { CrosshairColor = Color; }
 };

@@ -35,6 +35,9 @@ public:
 	UPROPERTY(EditAnywhere, Category = Input)
 	UInputAction* InteractAction;
 
+	UPROPERTY(EditAnywhere, Category = Input)
+	UInputAction* DragAction;
+
 protected:
 
 	virtual void BeginPlay() override;
@@ -45,13 +48,34 @@ protected:
 
 	void Interact();
 
+	void StartDrag();
+
+	void DragLoop();
+
+	void StopDrag();
+
+	void TraceUnderCrosshair(FHitResult& HitResult);
+
 private:
+
+	UPROPERTY()
+	class ALITHUD* HUD;
 
 	UPROPERTY(VisibleAnywhere, Category = Camera)
 	class UCameraComponent* FollowCamera;
 
 	UPROPERTY(VisibleAnywhere)
 	class ALever* InteractLever;
+
+	UPROPERTY(VisibleAnywhere)
+	class UPhysicsHandleComponent* PhysicsHandle;
+
+	UPROPERTY(EditAnywhere)
+	UTexture2D* CrosshairTexture;
+
+	bool bGrabbing;
+
+	UPrimitiveComponent* DragActor;
 
 public:
 

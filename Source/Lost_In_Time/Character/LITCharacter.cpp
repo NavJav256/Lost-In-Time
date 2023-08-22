@@ -10,6 +10,9 @@
 #include "Sound/SoundCue.h"
 #include "Lost_In_Time/PuzzleObjects/Lever.h"
 #include "Lost_In_Time/PlayerController/LITPlayerController.h"
+#include "Lost_In_Time/Interfaces/Dragable.h"
+#include "Lost_In_Time/HUD/LITHUD.h"
+#include "PhysicsEngine/PhysicsHandleComponent.h"
 
 ALITCharacter::ALITCharacter()
 {
@@ -22,6 +25,8 @@ ALITCharacter::ALITCharacter()
 	FollowCamera->bUsePawnControlRotation = true;
 
 	GetMesh()->HideBoneByName(FName("Head"), EPhysBodyOp::PBO_None);
+
+	PhysicsHandle = CreateDefaultSubobject<UPhysicsHandleComponent>(TEXT("Physics Handle"));
 }
 
 void ALITCharacter::BeginPlay()
@@ -41,6 +46,10 @@ void ALITCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	FHitResult HitRes;
+	TraceUnderCrosshair(HitRes);
+
+	DragLoop();
 }
 
 void ALITCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -57,6 +66,10 @@ void ALITCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
 		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &ACharacter::StopJumping);
 
 		EnhancedInputComponent->BindAction(InteractAction, ETriggerEvent::Triggered, this, &ALITCharacter::Interact);
+
+		EnhancedInputComponent->BindAction(DragAction, ETriggerEvent::Triggered, this, &ALITCharacter::StartDrag);
+		EnhancedInputComponent->BindAction(DragAction, ETriggerEvent::Completed, this, &ALITCharacter::StopDrag);
+		
 	}
 }
 
@@ -94,6 +107,76 @@ void ALITCharacter::Interact()
 	if (InteractLever)
 	{
 		InteractLever->Interact();
+	}
+}
+
+void ALITCharacter::StartDrag()
+{
+	if (DragActor)
+	{
+		PhysicsHandle->GrabComponentAtLocationWithRotation(DragActor, TEXT("None"), DragActor->GetComponentLocation(), DragActor->GetComponentRotation());
+		bGrabbing = true;
+	}
+}
+
+void ALITCharacter::DragLoop()
+{
+	if (bGrabbing)
+	{
+		PhysicsHandle->SetTargetLocation(FollowCamera->GetComponentLocation() + GetActorForwardVector() * 250);
+	}
+}
+
+void ALITCharacter::StopDrag()
+{
+	if (bGrabbing)
+	{
+		PhysicsHandle->ReleaseComponent();
+		bGrabbing = false;
+	}
+}
+
+void ALITCharacter::TraceUnderCrosshair(FHitResult& HitResult)
+{
+	HUD = HUD == nullptr ? Cast<ALITHUD>(UGameplayStatics::GetPlayerController(this, 0)->GetHUD()) : HUD;
+	
+	FVector2D ViewportSize;
+	if (GEngine && GEngine->GameViewport)
+	{
+		GEngine->GameViewport->GetViewportSize(ViewportSize);
+	}
+
+	FVector2D CrosshairLocation(ViewportSize.X / 2, ViewportSize.Y / 2);
+	FVector CrosshairWorldPosition;
+	FVector CrosshairWorldDirection;
+
+	bool bScreenToWorld = UGameplayStatics::DeprojectScreenToWorld(
+		UGameplayStatics::GetPlayerController(this, 0),
+		CrosshairLocation,
+		CrosshairWorldPosition,
+		CrosshairWorldDirection
+	);
+
+	if (bScreenToWorld)
+	{
+		FVector Start = CrosshairWorldPosition;
+		float DistanceToCharacter = (GetActorLocation() - Start).Size();
+		Start += CrosshairWorldDirection * (DistanceToCharacter + 100.f);
+		FVector End = Start + CrosshairWorldDirection * 500;
+		GetWorld()->LineTraceSingleByChannel(HitResult, Start, End, ECollisionChannel::ECC_Visibility);
+		
+		if (HitResult.GetActor() && HitResult.GetActor()->Implements<UDragable>())
+		{
+			DragActor = HitResult.GetComponent();
+			HUD->SetCrosshairColor(FLinearColor::Red);
+			UE_LOG(LogTemp, Warning, TEXT("Draggable"))
+		}
+		else
+		{
+			DragActor = nullptr;
+			HUD->SetCrosshairColor(FLinearColor::White);
+		}
+		
 	}
 }
 
