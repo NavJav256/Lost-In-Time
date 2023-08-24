@@ -8,11 +8,12 @@
 #include "EnhancedInputSubsystems.h"
 #include "Kismet/GameplayStatics.h"
 #include "Sound/SoundCue.h"
-#include "Lost_In_Time/PuzzleObjects/Lever.h"
 #include "Lost_In_Time/PlayerController/LITPlayerController.h"
 #include "Lost_In_Time/Interfaces/Dragable.h"
+#include "Lost_In_Time/Interfaces/Interactable.h"
 #include "Lost_In_Time/HUD/LITHUD.h"
 #include "PhysicsEngine/PhysicsHandleComponent.h"
+#include "DrawDebugHelpers.h"
 
 ALITCharacter::ALITCharacter()
 {
@@ -104,9 +105,13 @@ void ALITCharacter::Look(const FInputActionValue& Value)
 
 void ALITCharacter::Interact()
 {
-	if (InteractLever)
+	if (LookAtActor)
 	{
-		InteractLever->Interact();
+		IInteractable* Interactable = Cast<IInteractable>(LookAtActor);
+		if (Interactable)
+		{
+			Interactable->Interact();
+		}
 	}
 }
 
@@ -161,27 +166,30 @@ void ALITCharacter::TraceUnderCrosshair(FHitResult& HitResult)
 	{
 		FVector Start = CrosshairWorldPosition;
 		float DistanceToCharacter = (GetActorLocation() - Start).Size();
-		Start += CrosshairWorldDirection * (DistanceToCharacter + 100.f);
+		Start += CrosshairWorldDirection * (DistanceToCharacter + 10.f);
 		FVector End = Start + CrosshairWorldDirection * 500;
 		GetWorld()->LineTraceSingleByChannel(HitResult, Start, End, ECollisionChannel::ECC_Visibility);
-		
-		if (HitResult.GetActor() && HitResult.GetActor()->Implements<UDragable>())
+		//DrawDebugLine(GetWorld(), Start, End, FColor::Cyan);
+
+		if (HitResult.GetActor())
 		{
-			DragActor = HitResult.GetComponent();
-			HUD->SetCrosshairColor(FLinearColor::Red);
-			UE_LOG(LogTemp, Warning, TEXT("Draggable"))
-		}
-		else
-		{
-			DragActor = nullptr;
-			HUD->SetCrosshairColor(FLinearColor::White);
-		}
-		
+			LookAtActor = HitResult.GetActor();
+			if (LookAtActor->Implements<UDragable>())
+			{
+				DragActor = HitResult.GetComponent();
+				HUD->SetCrosshairColor(FLinearColor::Red);
+			}
+			else if (LookAtActor->Implements<UInteractable>())
+			{
+				HUD->SetCrosshairColor(FLinearColor::Red);
+			}
+			else
+			{
+				DragActor = nullptr;
+				HUD->SetCrosshairColor(FLinearColor::White);
+			}
+		}		
 	}
 }
 
-void ALITCharacter::SetInteractLever(ALever* Lever)
-{
-	InteractLever = Lever;
-}
 

@@ -63,22 +63,15 @@ private:
 
 	UPROPERTY(VisibleAnywhere, Category = Camera)
 	class UCameraComponent* FollowCamera;
-
+	
 	UPROPERTY(VisibleAnywhere)
-	class ALever* InteractLever;
+	AActor* LookAtActor;
 
 	UPROPERTY(VisibleAnywhere)
 	class UPhysicsHandleComponent* PhysicsHandle;
 
-	UPROPERTY(EditAnywhere)
-	UTexture2D* CrosshairTexture;
-
 	bool bGrabbing;
 
 	UPrimitiveComponent* DragActor;
-
-public:
-
-	void SetInteractLever(ALever* Lever);
 
 };

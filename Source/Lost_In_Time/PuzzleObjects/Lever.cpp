@@ -3,7 +3,6 @@
 
 #include "Lever.h"
 #include "Components/SphereComponent.h"
-#include "Lost_In_Time/Character/LITCharacter.h"
 #include "Lost_In_Time/PuzzleObjects/Door.h"
 
 ALever::ALever()
@@ -16,9 +15,6 @@ ALever::ALever()
 	Handle = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Lever Handle"));
 	Handle->SetupAttachment(RootComponent);
 
-	AreaSphere = CreateDefaultSubobject<USphereComponent>(TEXT("AreaSphere"));
-	AreaSphere->SetupAttachment(RootComponent);
-
 	HandleTimeline = CreateDefaultSubobject<UTimelineComponent>(TEXT("Handle Timeline Component"));
 
 	LeverState = ELeverState::ELS_OFF;
@@ -27,29 +23,7 @@ ALever::ALever()
 void ALever::BeginPlay()
 {
 	Super::BeginPlay();
-	
-	AreaSphere->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
-	AreaSphere->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Overlap);
-	AreaSphere->OnComponentBeginOverlap.AddDynamic(this, &ALever::OnSphereOverlap);
-	AreaSphere->OnComponentEndOverlap.AddDynamic(this, &ALever::OnSphereEndOverlap);
-}
 
-void ALever::OnSphereOverlap(UPrimitiveComponent* OverlapepdComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
-{
-	ALITCharacter* LITCharacter = Cast<ALITCharacter>(OtherActor);
-	if (LITCharacter)
-	{
-		LITCharacter->SetInteractLever(this);
-	}
-}
-
-void ALever::OnSphereEndOverlap(UPrimitiveComponent* OverlapepdComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
-{
-	ALITCharacter* LITCharacter = Cast<ALITCharacter>(OtherActor);
-	if (LITCharacter)
-	{
-		LITCharacter->SetInteractLever(nullptr);
-	}
 }
 
 void ALever::UpdateHandle(float HandleRotation)

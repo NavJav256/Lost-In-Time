@@ -24,6 +24,7 @@ protected:
 
 private:
 
+	UPROPERTY(EditAnywhere)
 	UTexture2D* Crosshair;
 
 	FLinearColor CrosshairColor;

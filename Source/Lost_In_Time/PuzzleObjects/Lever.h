@@ -32,12 +32,6 @@ protected:
 
 	virtual void BeginPlay() override;
 
-	UFUNCTION()
-	virtual void OnSphereOverlap(UPrimitiveComponent* OverlapepdComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
-
-	UFUNCTION()
-	virtual void OnSphereEndOverlap(UPrimitiveComponent* OverlapepdComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
-
 private:
 
 	UPROPERTY(VisibleAnywhere)
@@ -48,9 +42,6 @@ private:
 
 	UPROPERTY(VisibleAnywhere)
 	UStaticMeshComponent* Handle;
-
-	UPROPERTY(VisibleAnywhere)
-	class USphereComponent* AreaSphere;
 
 	UPROPERTY(VisibleAnywhere)
 	UTimelineComponent* HandleTimeline;
