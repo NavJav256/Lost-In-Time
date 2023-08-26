@@ -39,6 +39,7 @@ private:
 	UPROPERTY(VisibleAnywhere)
 	int32 Count;
 
+	UPROPERTY(EditAnywhere)
 	int32 Correct;
 
 public:

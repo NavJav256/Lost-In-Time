@@ -169,7 +169,7 @@ void ALITCharacter::TraceUnderCrosshair(FHitResult& HitResult)
 		Start += CrosshairWorldDirection * (DistanceToCharacter + 10.f);
 		FVector End = Start + CrosshairWorldDirection * 500;
 		GetWorld()->LineTraceSingleByChannel(HitResult, Start, End, ECollisionChannel::ECC_Visibility);
-		//DrawDebugLine(GetWorld(), Start, End, FColor::Cyan);
+		DrawDebugLine(GetWorld(), Start, End, FColor::Cyan);
 
 		if (HitResult.GetActor())
 		{
