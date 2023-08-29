@@ -166,10 +166,10 @@ void ALITCharacter::TraceUnderCrosshair(FHitResult& HitResult)
 	{
 		FVector Start = CrosshairWorldPosition;
 		float DistanceToCharacter = (GetActorLocation() - Start).Size();
-		Start += CrosshairWorldDirection * (DistanceToCharacter + 10.f);
-		FVector End = Start + CrosshairWorldDirection * 500;
+		Start += CrosshairWorldDirection * (DistanceToCharacter - 80.f);
+		FVector End = Start + CrosshairWorldDirection * 200.f;
 		GetWorld()->LineTraceSingleByChannel(HitResult, Start, End, ECollisionChannel::ECC_Visibility);
-		DrawDebugLine(GetWorld(), Start, End, FColor::Cyan);
+		//DrawDebugLine(GetWorld(), Start, End, FColor::Cyan);
 
 		if (HitResult.GetActor())
 		{
@@ -188,7 +188,7 @@ void ALITCharacter::TraceUnderCrosshair(FHitResult& HitResult)
 				DragActor = nullptr;
 				HUD->SetCrosshairColor(FLinearColor::White);
 			}
-		}		
+		}
 	}
 }
 

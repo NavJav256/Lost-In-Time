@@ -21,6 +21,10 @@ protected:
 
 	virtual void BeginPlay() override;
 
+	void GoUp(float DeltaTime);
+
+	void GoDown(float DeltaTime);
+
 private:
 
 	UPROPERTY(VisibleAnywhere)
@@ -31,5 +35,21 @@ private:
 
 	UPROPERTY(VisibleAnywhere)
 	UStaticMeshComponent* Platform;
+
+	UPROPERTY(EditAnywhere)
+	float Speed = 200;
+
+	UPROPERTY(EditAnywhere, META = (MakeEditWidget = true))
+	FVector TargetLocation;
+
+	FVector GlobalStartLocation;
+	FVector GlobalTargetLocation;
+
+	bool bLiftDown;
+	bool bLiftMoving;
+
+public:
+
+	FORCEINLINE void ActivateLift() { bLiftMoving = true; }
 
 };
