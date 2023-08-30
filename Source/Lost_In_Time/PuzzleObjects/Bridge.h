@@ -84,7 +84,7 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Bridge Properties")
 	int32 NumSections;
 
-	UPROPERTY(VisibleAnywhere, Category = "Bridge Properties")
+	UPROPERTY(EditAnywhere, Category = "Bridge Properties")
 	bool bAssembled;
 
 	UPROPERTY(EditAnywhere, Category = "Bridge Properties")

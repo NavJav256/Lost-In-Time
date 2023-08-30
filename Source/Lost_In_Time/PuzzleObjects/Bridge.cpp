@@ -103,9 +103,9 @@ void ABridge::OnConstruction(const FTransform& Transform)
 	LeftRailEndTwo->SetRelativeTransform(LeftRailEndTwoTransform);
 
 	BridgeStart->SetRelativeLocation(FVector(SideOffset / 2, 0, 0));
-	StartPins->SetRelativeLocation(FVector(SideOffset / 2, 0, bAssembled ? PinsTopZ : PinsBottomZ));
+	StartPins->SetRelativeLocation(FVector(SideOffset / 2, 0, bAssembled ? PinsBottomZ : PinsTopZ));
 	BridgeEnd->SetRelativeLocation(FVector(SideOffset / 2, (NumSections + 1) * 100, 0));
-	EndPins->SetRelativeLocation(FVector(SideOffset / 2, (NumSections + 1) * 100, bAssembled ? PinsTopZ : PinsBottomZ));
+	EndPins->SetRelativeLocation(FVector(SideOffset / 2, (NumSections + 1) * 100, bAssembled ? PinsBottomZ : PinsTopZ));
 
 	RightCollider->SetBoxExtent(FVector(32, (NumSections + 1) * 50, 200));
 	RightCollider->SetRelativeLocation(FVector(0, ((NumSections / 2) * 100) + 100, 200));
