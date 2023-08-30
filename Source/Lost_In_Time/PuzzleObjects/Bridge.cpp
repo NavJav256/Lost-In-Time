@@ -59,11 +59,62 @@ ABridge::ABridge()
 
 	LeftCollider = CreateDefaultSubobject<UBoxComponent>(TEXT("Bridge Left Collider"));
 	LeftCollider->SetupAttachment(RootComponent);
+
+	NumSections = 16;
+	bAssembled = false;
 }
 
 void ABridge::OnConstruction(const FTransform& Transform)
 {
+	RightSide->ClearInstances();
+	LeftSide->ClearInstances();
+	RightRails->ClearInstances();
+	LeftRails->ClearInstances();
+	for (int32 i = 0; i < NumSections; i++)
+	{
+		FVector RightLocation(0, (i * 100) + 100, 0);
+		FRotator RightSideRotation((bAssembled ? 0.f : 90.f), 0, 0);
+		FVector LeftLocation(SideOffset, (i * 100) + 100, 0);
+		FRotator LeftSideRotation((bAssembled ? 0.f : 90.f), 180.f, 0);
+		FTransform RightTransform(RightSideRotation, RightLocation, FVector(1, 1, 1));
+		FTransform LeftTransform(LeftSideRotation, LeftLocation, FVector(1, 1, 1));
+		RightSide->AddInstance(RightTransform, false);
+		LeftSide->AddInstance(LeftTransform, false);
+		FTransform RightRailTransform(FRotator::ZeroRotator, RightLocation, FVector(1, 1, 1));
+		FTransform LeftRailTransform(FRotator(0, 180.f, 0), LeftLocation, FVector(1, 1, 1));
+		RightRails->AddInstance(RightRailTransform, false);
+		LeftRails->AddInstance(LeftRailTransform, false);
+	}
 
+	FVector RightRailEndOneLocation(28.5f, 25, 140.5f);
+	FVector RightRailEndTwoLocation(28.5f, ((NumSections + 1) * 100) - 25, 140.5f);
+	FRotator RightRailEndTwoRotation(0, 180.f, 0);
+	FTransform RightRailEndOneTransform(FRotator::ZeroRotator, RightRailEndOneLocation, FVector(1,1,1));
+	FTransform RightRailEndTwoTransform(RightRailEndTwoRotation, RightRailEndTwoLocation, FVector(1,1,1));
+	RightRailEndOne->SetRelativeTransform(RightRailEndOneTransform);
+	RightRailEndTwo->SetRelativeTransform(RightRailEndTwoTransform);
+
+	FVector LeftRailEndOneLocation(-808.5f, 25, 140.5f);
+	FVector LeftRailEndTwoLocation(-808.5f, ((NumSections + 1) * 100) - 25, 140.5f);
+	FRotator LeftRailEndTwoRotation(0, 180.f, 0);
+	FTransform LeftRailEndOneTransform(FRotator::ZeroRotator, LeftRailEndOneLocation, FVector(1, 1, 1));
+	FTransform LeftRailEndTwoTransform(RightRailEndTwoRotation, LeftRailEndTwoLocation, FVector(1, 1, 1));
+	LeftRailEndOne->SetRelativeTransform(LeftRailEndOneTransform);
+	LeftRailEndTwo->SetRelativeTransform(LeftRailEndTwoTransform);
+
+	BridgeStart->SetRelativeLocation(FVector(SideOffset / 2, 0, 0));
+	StartPins->SetRelativeLocation(FVector(SideOffset / 2, 0, bAssembled ? PinsTopZ : PinsBottomZ));
+	BridgeEnd->SetRelativeLocation(FVector(SideOffset / 2, (NumSections + 1) * 100, 0));
+	EndPins->SetRelativeLocation(FVector(SideOffset / 2, (NumSections + 1) * 100, bAssembled ? PinsTopZ : PinsBottomZ));
+
+	RightCollider->SetBoxExtent(FVector(32, (NumSections + 1) * 50, 200));
+	RightCollider->SetRelativeLocation(FVector(0, ((NumSections / 2) * 100) + 100, 200));
+	LeftCollider->SetBoxExtent(FVector(32, (NumSections + 1) * 50, 200));
+	LeftCollider->SetRelativeLocation(FVector(SideOffset, ((NumSections / 2) * 100) + 100, 200));
+	StartCollider->SetBoxExtent(FVector(450, 20, 200));
+	StartCollider->SetRelativeLocation(FVector(-390, 0, 200));
+	EndCollider->SetBoxExtent(FVector(450, 20, 200));
+	EndCollider->SetRelativeLocation(FVector(-390, (NumSections + 1) * 100, 200));
 }
 
 void ABridge::BeginPlay()

@@ -77,4 +77,19 @@ private:
 
 	UPROPERTY(VisibleAnywhere)
 	UBoxComponent* LeftCollider;
+
+	UPROPERTY(EditAnywhere, Category = "Bridge Properties")
+	float SideOffset;
+
+	UPROPERTY(EditAnywhere, Category = "Bridge Properties")
+	int32 NumSections;
+
+	UPROPERTY(VisibleAnywhere, Category = "Bridge Properties")
+	bool bAssembled;
+
+	UPROPERTY(EditAnywhere, Category = "Bridge Properties")
+	float PinsTopZ;
+
+	UPROPERTY(EditAnywhere, Category = "Bridge Properties")
+	float PinsBottomZ;
 };
