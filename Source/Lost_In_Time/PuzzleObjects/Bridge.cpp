@@ -135,6 +135,7 @@ void ABridge::BeginPlay()
 {
 	Super::BeginPlay();
 
+	Activate();
 }
 
 void ABridge::UpdateBridge(float BridgeRotation)
@@ -192,7 +193,7 @@ void ABridge::Activate()
 	{
 		BridgeTimeline->AddInterpFloat(BridgeCurve, BridgeTrack);
 		BridgeTimeline->SetTimelineFinishedFunc(FOnTimelineEventStatic::CreateUObject(this, &ABridge::BridgeComplete));
-		BridgeTimeline->SetPlayRate(1.f);
+		BridgeTimeline->SetPlayRate(2.f);
 		BridgeTimeline->Play();	
 	}
 }
