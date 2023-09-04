@@ -135,7 +135,6 @@ void ABridge::BeginPlay()
 {
 	Super::BeginPlay();
 
-	Activate();
 }
 
 void ABridge::UpdateBridge(float BridgeRotation)

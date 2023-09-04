@@ -58,4 +58,6 @@ public:
 	FORCEINLINE void DischargeCube() { CubeState = ECubeState::ECS_DISCHARGE; }
 	FORCEINLINE void StopCube() { CubeState = ECubeState::ECS_IDLE; }
 
+	FORCEINLINE float GetVoltage() { return Voltage; }
+
 };

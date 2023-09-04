@@ -52,5 +52,8 @@ void ASmallDoor::SwitchState()
 
 void ASmallDoor::UpdateDoor(float DoorUpdate)
 {
+	FVector Location = DoorMesh->GetRelativeLocation();
+	Location.X += DoorUpdate;
 
+	DoorMesh->SetRelativeLocation(Location);
 }
