@@ -15,10 +15,16 @@ void ASmallDoorPuzzle::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	Trigger->OnUnlockEvent.AddDynamic(this, &ASmallDoorPuzzle::OnUnlockStateChanged);
+	Trigger->OnUnlockEvent.AddDynamic(this, &ASmallDoorPuzzle::OnUnlock);
+	Trigger->OnLockEvent.AddDynamic(this, &ASmallDoorPuzzle::OnLock);
 }
 
-void ASmallDoorPuzzle::OnUnlockStateChanged(bool bUnlock)
+void ASmallDoorPuzzle::OnLock()
+{
+	Door->SwitchState();
+}
+
+void ASmallDoorPuzzle::OnUnlock()
 {
 	Door->SwitchState();
 }

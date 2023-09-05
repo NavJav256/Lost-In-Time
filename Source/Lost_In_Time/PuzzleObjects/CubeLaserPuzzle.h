@@ -4,16 +4,16 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "BridgePuzzle.generated.h"
+#include "CubeLaserPuzzle.generated.h"
 
 UCLASS()
-class LOST_IN_TIME_API ABridgePuzzle : public AActor
+class LOST_IN_TIME_API ACubeLaserPuzzle : public AActor
 {
 	GENERATED_BODY()
 	
 public:
 
-	ABridgePuzzle();
+	ACubeLaserPuzzle();
 
 protected:
 
@@ -28,5 +28,6 @@ private:
 	class AEnergyCubeTrigger* Trigger;
 
 	UPROPERTY(EditAnywhere)
-	class ABridge* Bridge;
+	class ALaserWall* LaserWall;
+
 };

@@ -34,6 +34,8 @@ void AEnergyCubeTrigger::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	bLocked = true;
+
 	Trigger->OnComponentBeginOverlap.AddDynamic(this, &AEnergyCubeTrigger::OnOverlapBegin);
 	Trigger->OnComponentEndOverlap.AddDynamic(this, &AEnergyCubeTrigger::OnOverlapEnd);
 }
@@ -45,20 +47,26 @@ void AEnergyCubeTrigger::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AAc
 	{
 		if (bNeedsPower && Cube->GetVoltage() == 1.f)
 		{
-			OnUnlockEvent.Broadcast(true);
+			bLocked = false;
 		}
 		if (!bNeedsPower && Cube->GetVoltage() == 0.f)
 		{
-			OnUnlockEvent.Broadcast(true);
+			bLocked = false;
+		}
+		if (!bLocked)
+		{
+			OnUnlockEvent.Broadcast();
 		}
 	}
 }
 
 void AEnergyCubeTrigger::OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
-	if (Cube == OtherActor)
+	Cube = Cast<AEnergyCube>(OtherActor);
+	if (Cube)
 	{
-		OnUnlockEvent.Broadcast(false);
+		bLocked = true;
+		OnLockEvent.Broadcast();
 		Cube = nullptr;
 	}
 }

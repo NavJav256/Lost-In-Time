@@ -171,6 +171,7 @@ void ABridge::BridgeComplete()
 		{
 			StartPins->SetRelativeLocation(FVector(SideOffset / 2, (NumSections + 1) * 100, PinsBottomZ));
 			StartCollider->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Ignore);
+			StartCollider->SetCollisionResponseToChannel(ECollisionChannel::ECC_PhysicsBody, ECollisionResponse::ECR_Ignore);
 		}
 	}
 }
@@ -187,6 +188,7 @@ void ABridge::Activate()
 	bAssembled = true;
 	EndPins->SetRelativeLocation(FVector(SideOffset / 2, 0, PinsBottomZ));
 	EndCollider->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Ignore);
+	EndCollider->SetCollisionResponseToChannel(ECollisionChannel::ECC_PhysicsBody, ECollisionResponse::ECR_Ignore);
 	BridgeTrack.BindDynamic(this, &ABridge::UpdateBridge);
 	if (BridgeTimeline && BridgeCurve)
 	{
@@ -204,7 +206,9 @@ void ABridge::Deactivate()
 	StartPins->SetRelativeLocation(FVector(SideOffset / 2, (NumSections + 1) * 100, PinsTopZ));
 	EndPins->SetRelativeLocation(FVector(SideOffset / 2, 0, PinsTopZ));
 	StartCollider->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Block);
+	StartCollider->SetCollisionResponseToChannel(ECollisionChannel::ECC_PhysicsBody, ECollisionResponse::ECR_Block);
 	EndCollider->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Block);
+	EndCollider->SetCollisionResponseToChannel(ECollisionChannel::ECC_PhysicsBody, ECollisionResponse::ECR_Block);
 	BridgeTrack.BindDynamic(this, &ABridge::UpdateBridge);
 	if (BridgeTimeline && BridgeCurve)
 	{

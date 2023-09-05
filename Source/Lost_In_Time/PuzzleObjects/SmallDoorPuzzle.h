@@ -20,7 +20,10 @@ protected:
 	virtual void BeginPlay() override;
 
 	UFUNCTION()
-	void OnUnlockStateChanged(bool bUnlock);
+	void OnUnlock();
+
+	UFUNCTION()
+	void OnLock();
 
 private:
 

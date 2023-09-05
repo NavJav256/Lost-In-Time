@@ -49,19 +49,21 @@ void AEnergyCube::Charge(float DeltaTime)
 	else
 	{
 		Voltage = 1.f;
+		return;
 	}
 	DynamicVoltageMaterialInstance->SetScalarParameterValue(TEXT("Voltage"), Voltage);
 }
 
 void AEnergyCube::Discharge(float DeltaTime)
 {
-	if (Voltage >= 0)
+	if (Voltage >= 0.f)
 	{
 		Voltage -= DeltaTime;
 	}
 	else
 	{
-		Voltage = 0;
+		Voltage = 0.f;
+		return;
 	}
 	DynamicVoltageMaterialInstance->SetScalarParameterValue(TEXT("Voltage"), Voltage);
 }

@@ -7,7 +7,8 @@
 #include "Lost_In_Time/PuzzleObjects/EnergyCube.h"
 #include "EnergyCubeTrigger.generated.h"
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnUnlockEvent, bool, bUnlock);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnUnlockEvent);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnLockEvent);
 
 UCLASS()
 class LOST_IN_TIME_API AEnergyCubeTrigger : public AActor
@@ -21,6 +22,7 @@ public:
 	virtual void OnConstruction(const FTransform& Transform) override;
 
 	FOnUnlockEvent OnUnlockEvent;
+	FOnLockEvent OnLockEvent;
 
 protected:
 
@@ -49,5 +51,8 @@ private:
 
 	UPROPERTY(EditAnywhere)
 	bool bNeedsPower;
+
+	UPROPERTY(VisibleAnywhere)
+	bool bLocked;
 
 };

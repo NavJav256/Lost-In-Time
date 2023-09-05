@@ -15,17 +15,11 @@ void ABridgePuzzle::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	Trigger->OnUnlockEvent.AddDynamic(this, &ABridgePuzzle::OnUnlockStateChanged);
+	Trigger->OnUnlockEvent.AddDynamic(this, &ABridgePuzzle::OnUnlock);
 }
 
-void ABridgePuzzle::OnUnlockStateChanged(bool bUnlock)
+void ABridgePuzzle::OnUnlock()
 {
-	if (bUnlock)
-	{
-		Bridge->Activate();
-	}
-	else
-	{
-		Bridge->Deactivate();
-	}
+	Bridge->Activate();
 }
+
