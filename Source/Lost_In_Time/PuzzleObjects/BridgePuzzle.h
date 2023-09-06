@@ -4,29 +4,29 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "FogWall.generated.h"
+#include "BridgePuzzle.generated.h"
 
 UCLASS()
-class LOST_IN_TIME_API AFogWall : public AActor
+class LOST_IN_TIME_API ABridgePuzzle : public AActor
 {
 	GENERATED_BODY()
 	
 public:
 
-	AFogWall();
-
-	void ShowFog();
-
-	void ClearFog();
+	ABridgePuzzle();
 
 protected:
 
 	virtual void BeginPlay() override;
 
+	UFUNCTION()
+	void OnUnlock();
+
 private:
 
-	UPROPERTY(VisibleAnywhere)
-	UStaticMeshComponent* FogMesh;
+	UPROPERTY(EditAnywhere)
+	class AEnergyCubeTrigger* Trigger;
 
-	bool bVisible;
+	UPROPERTY(EditAnywhere)
+	class ABridge* Bridge;
 };

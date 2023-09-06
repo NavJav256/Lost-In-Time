@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "Components/TimelineComponent.h"
 #include "Bridge.generated.h"
 
 UCLASS()
@@ -21,9 +22,17 @@ public:
 
 	void Deactivate();
 
+	virtual void Tick(float DeltaTime) override;
+
 protected:
 
 	virtual void BeginPlay() override;
+
+	UFUNCTION()
+	void UpdateBridge(float BridgeRotation);
+
+	UFUNCTION()
+	void BridgeComplete();
 
 private:
 
@@ -78,6 +87,14 @@ private:
 	UPROPERTY(VisibleAnywhere)
 	UBoxComponent* LeftCollider;
 
+	UPROPERTY(VisibleAnywhere)
+	UTimelineComponent* BridgeTimeline;
+
+	FOnTimelineFloat BridgeTrack;
+
+	UPROPERTY(EditAnywhere)
+	UCurveFloat* BridgeCurve;
+
 	UPROPERTY(EditAnywhere, Category = "Bridge Properties")
 	float SideOffset;
 
@@ -92,4 +109,7 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = "Bridge Properties")
 	float PinsBottomZ;
+
+	int32 BridgeIndex;
+
 };

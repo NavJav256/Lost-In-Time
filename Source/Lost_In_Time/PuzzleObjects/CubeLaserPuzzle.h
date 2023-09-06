@@ -4,32 +4,30 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "LanternPuzzle.generated.h"
+#include "CubeLaserPuzzle.generated.h"
 
 UCLASS()
-class LOST_IN_TIME_API ALanternPuzzle : public AActor
+class LOST_IN_TIME_API ACubeLaserPuzzle : public AActor
 {
 	GENERATED_BODY()
 	
 public:
 
-	ALanternPuzzle();
+	ACubeLaserPuzzle();
 
 protected:
 
 	virtual void BeginPlay() override;
 
-	void CheckSolution();
+	UFUNCTION()
+	void OnUnlock();
 
 private:
 
 	UPROPERTY(EditAnywhere)
-	TArray<class AWallButton*> Buttons;
+	class AEnergyCubeTrigger* Trigger;
 
 	UPROPERTY(EditAnywhere)
-	TArray<bool> Solution;
-
-	UPROPERTY(EditAnywhere)
-	class AFogWall* Fog;
+	class ALaserWall* LaserWall;
 
 };

@@ -60,8 +60,22 @@ ABridge::ABridge()
 	LeftCollider = CreateDefaultSubobject<UBoxComponent>(TEXT("Bridge Left Collider"));
 	LeftCollider->SetupAttachment(RootComponent);
 
+	StartCollider->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+	StartCollider->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Block);
+	EndCollider->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+	EndCollider->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Block);
+	RightCollider->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+	RightCollider->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Block);
+	LeftCollider->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+	LeftCollider->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Block);
+
+	BridgeTimeline = CreateDefaultSubobject<UTimelineComponent>(TEXT("Bridge Timeline"));
+
 	NumSections = 16;
 	bAssembled = false;
+	SideOffset = -783.f;
+	PinsTopZ = 66.f;
+	PinsBottomZ = -53.f;
 }
 
 void ABridge::OnConstruction(const FTransform& Transform)
@@ -102,33 +116,105 @@ void ABridge::OnConstruction(const FTransform& Transform)
 	LeftRailEndOne->SetRelativeTransform(LeftRailEndOneTransform);
 	LeftRailEndTwo->SetRelativeTransform(LeftRailEndTwoTransform);
 
-	BridgeStart->SetRelativeLocation(FVector(SideOffset / 2, 0, 0));
-	StartPins->SetRelativeLocation(FVector(SideOffset / 2, 0, bAssembled ? PinsBottomZ : PinsTopZ));
-	BridgeEnd->SetRelativeLocation(FVector(SideOffset / 2, (NumSections + 1) * 100, 0));
-	EndPins->SetRelativeLocation(FVector(SideOffset / 2, (NumSections + 1) * 100, bAssembled ? PinsBottomZ : PinsTopZ));
+	BridgeStart->SetRelativeLocation(FVector(SideOffset / 2, (NumSections + 1) * 100, 0));
+	StartPins->SetRelativeLocation(FVector(SideOffset / 2, (NumSections + 1) * 100, bAssembled ? PinsBottomZ : PinsTopZ));
+	BridgeEnd->SetRelativeLocation(FVector(SideOffset / 2, 0, 0));
+	EndPins->SetRelativeLocation(FVector(SideOffset / 2, 0, bAssembled ? PinsBottomZ : PinsTopZ));
 
 	RightCollider->SetBoxExtent(FVector(32, (NumSections + 1) * 50, 200));
 	RightCollider->SetRelativeLocation(FVector(0, ((NumSections / 2) * 100) + 100, 200));
 	LeftCollider->SetBoxExtent(FVector(32, (NumSections + 1) * 50, 200));
 	LeftCollider->SetRelativeLocation(FVector(SideOffset, ((NumSections / 2) * 100) + 100, 200));
 	StartCollider->SetBoxExtent(FVector(450, 20, 200));
-	StartCollider->SetRelativeLocation(FVector(-390, 0, 200));
+	StartCollider->SetRelativeLocation(FVector(-390, (NumSections + 1) * 100, 200));
 	EndCollider->SetBoxExtent(FVector(450, 20, 200));
-	EndCollider->SetRelativeLocation(FVector(-390, (NumSections + 1) * 100, 200));
+	EndCollider->SetRelativeLocation(FVector(-390, 0, 200));
 }
 
 void ABridge::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
+}
+
+void ABridge::UpdateBridge(float BridgeRotation)
+{
+	FVector RightLocation(0, (BridgeIndex * 100) + 100, 0);
+	FRotator RightSideRotation(BridgeRotation, 0, 0);
+	FVector LeftLocation(SideOffset, (BridgeIndex * 100) + 100, 0);
+	FRotator LeftSideRotation(BridgeRotation, 180.f, 0);
+	FTransform RightTransform(RightSideRotation, RightLocation, FVector(1, 1, 1));
+	FTransform LeftTransform(LeftSideRotation, LeftLocation, FVector(1, 1, 1));
+	RightSide->UpdateInstanceTransform(BridgeIndex, RightTransform);
+	LeftSide->UpdateInstanceTransform(BridgeIndex, LeftTransform);
+	RightSide->MarkRenderStateDirty();
+	LeftSide->MarkRenderStateDirty();
+}
+
+void ABridge::BridgeComplete()
+{
+	BridgeIndex++;
+	if (BridgeIndex < NumSections)
+	{
+		if (bAssembled)
+		{
+			BridgeTimeline->PlayFromStart();
+		}
+		else
+		{
+			BridgeTimeline->ReverseFromEnd();
+		}
+	}
+	else
+	{
+		if (bAssembled)
+		{
+			StartPins->SetRelativeLocation(FVector(SideOffset / 2, (NumSections + 1) * 100, PinsBottomZ));
+			StartCollider->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Ignore);
+			StartCollider->SetCollisionResponseToChannel(ECollisionChannel::ECC_PhysicsBody, ECollisionResponse::ECR_Ignore);
+		}
+	}
+}
+
+void ABridge::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+
 }
 
 void ABridge::Activate()
 {
-
+	BridgeIndex = 0;
+	bAssembled = true;
+	EndPins->SetRelativeLocation(FVector(SideOffset / 2, 0, PinsBottomZ));
+	EndCollider->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Ignore);
+	EndCollider->SetCollisionResponseToChannel(ECollisionChannel::ECC_PhysicsBody, ECollisionResponse::ECR_Ignore);
+	BridgeTrack.BindDynamic(this, &ABridge::UpdateBridge);
+	if (BridgeTimeline && BridgeCurve)
+	{
+		BridgeTimeline->AddInterpFloat(BridgeCurve, BridgeTrack);
+		BridgeTimeline->SetTimelineFinishedFunc(FOnTimelineEventStatic::CreateUObject(this, &ABridge::BridgeComplete));
+		BridgeTimeline->SetPlayRate(2.f);
+		BridgeTimeline->Play();	
+	}
 }
 
 void ABridge::Deactivate()
 {
-
+	BridgeIndex = 0;
+	bAssembled = false;
+	StartPins->SetRelativeLocation(FVector(SideOffset / 2, (NumSections + 1) * 100, PinsTopZ));
+	EndPins->SetRelativeLocation(FVector(SideOffset / 2, 0, PinsTopZ));
+	StartCollider->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Block);
+	StartCollider->SetCollisionResponseToChannel(ECollisionChannel::ECC_PhysicsBody, ECollisionResponse::ECR_Block);
+	EndCollider->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Block);
+	EndCollider->SetCollisionResponseToChannel(ECollisionChannel::ECC_PhysicsBody, ECollisionResponse::ECR_Block);
+	BridgeTrack.BindDynamic(this, &ABridge::UpdateBridge);
+	if (BridgeTimeline && BridgeCurve)
+	{
+		BridgeTimeline->AddInterpFloat(BridgeCurve, BridgeTrack);
+		BridgeTimeline->SetTimelineFinishedFunc(FOnTimelineEventStatic::CreateUObject(this, &ABridge::BridgeComplete));
+		BridgeTimeline->SetPlayRate(10.f);
+		BridgeTimeline->ReverseFromEnd();
+	}
 }
