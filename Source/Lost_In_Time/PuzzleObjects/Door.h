@@ -45,4 +45,8 @@ protected:
 	UPROPERTY(EditAnywhere)
 	UCurveFloat* DoorCurve;
 
+public:
+
+	FORCEINLINE EDoorState GetDoorState() { return DoorState; }
+
 };
